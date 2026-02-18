@@ -1,11 +1,12 @@
 const DISCOGS_API_BASE = 'https://api.discogs.com'
-const DISCOGS_TOKEN = process.env.DISCOGS_TOKEN
-
-if (!DISCOGS_TOKEN) {
-  throw new Error('Missing DISCOGS_TOKEN environment variable')
-}
 
 export async function discogsFetch(endpoint: string, options: RequestInit = {}) {
+  const DISCOGS_TOKEN = process.env.NEXT_PUBLIC_DISCOGS_TOKEN
+  
+  if (!DISCOGS_TOKEN) {
+    throw new Error('Missing NEXT_PUBLIC_DISCOGS_TOKEN environment variable')
+  }
+  
   const url = `${DISCOGS_API_BASE}${endpoint}`
   
   const headers = {
