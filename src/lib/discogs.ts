@@ -1,10 +1,15 @@
+"use server"
+
 const DISCOGS_API_BASE = 'https://api.discogs.com'
 
 export async function discogsFetch(endpoint: string, options: RequestInit = {}) {
-  const DISCOGS_TOKEN = process.env.NEXT_PUBLIC_DISCOGS_TOKEN
+  const DISCOGS_TOKEN = process.env.DISCOGS_TOKEN
+
+  console.log('Running on server?', typeof window === 'undefined')
+  console.log('Token exists?', !!process.env.DISCOGS_TOKEN)
   
   if (!DISCOGS_TOKEN) {
-    throw new Error('Missing NEXT_PUBLIC_DISCOGS_TOKEN environment variable')
+    throw new Error('Missing DISCOGS_TOKEN environment variable')
   }
   
   const url = `${DISCOGS_API_BASE}${endpoint}`

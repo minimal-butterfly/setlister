@@ -64,6 +64,16 @@ export interface DiscogsRelease {
   thumb?: string
   cover_image?: string
   tracklist: DiscogsTrack[]
+  genres?: string[]
+  styles?: Array<string>,
+  labels?: Array<{
+    name: string
+    catno: string
+    entity_type: string
+    entity_type_name: string
+    id: number
+    resource_url: string
+  }>
 }
 
 export interface DiscogsTrack {
