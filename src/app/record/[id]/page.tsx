@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import RecordCard from '../../../components/RecordCard';
 import { DiscogsRelease } from '../../../types';
 
 export default function RecordPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const fromSearchTerm = searchParams.get('from');
   const [record, setRecord] = useState<DiscogsRelease | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,6 +62,14 @@ export default function RecordPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex min-h-screen w-full max-w-4xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        {fromSearchTerm && (
+          <Link
+            href={`/record-collection?q=${encodeURIComponent(fromSearchTerm)}`}
+            className="mb-6 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+          >
+            ← Back to search results
+          </Link>
+        )}
         <header className="w-full text-center sm:text-left mb-8">
           <h1 className="text-4xl font-bold text-black dark:text-zinc-50">Record Details</h1>
         </header>

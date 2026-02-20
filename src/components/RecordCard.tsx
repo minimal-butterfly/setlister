@@ -1,16 +1,25 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { DiscogsRelease } from '../types';
 import Image from 'next/image';
 
 interface RecordCardProps {
   record: DiscogsRelease;
+  searchTerm?: string;
 }
 
-export default function RecordCard({ record }: RecordCardProps) {
+export default function RecordCard({ record, searchTerm }: RecordCardProps) {
+  const searchParams = useSearchParams();
+  const effectiveTerm = searchTerm ?? searchParams.get('q') ?? '';
+
+  const href = effectiveTerm
+    ? `/record/${record.id}?from=${encodeURIComponent(effectiveTerm)}`
+    : `/record/${record.id}`;
+
   return (
-    <Link href={`/record/${record.id}`}>
+    <Link href={href}>
       <div className="border border-gray-200 rounded-lg p-4 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer">
         {record.thumb && (
           <div className="mb-4">
