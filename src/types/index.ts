@@ -58,6 +58,7 @@ export interface DiscogsRelease {
   id: number
   title: string
   artist: string
+  artists?: Array<{ name: string; join: string }>
   year: number
   label: string
   resource_url: string
