@@ -1,0 +1,13 @@
+/* SearchResults styles — uses only semantic tokens, no raw values. */
+
+.message {
+  font-size: var(--primitive-text-base);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+}
+
+.error {
+  font-size: var(--primitive-text-base);
+  color: #ef4444;
+  font-family: var(--font-body);
+}

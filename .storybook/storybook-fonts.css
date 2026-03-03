@@ -1,0 +1,11 @@
+/* Font CSS variable definitions for Storybook.
+   Mirrors the variables that next/font/google injects via class names in the app.
+   These must be defined here because Storybook does not render the Next.js root layout. */
+
+:root {
+  --font-space-mono: 'Space Mono', monospace;
+  --font-inter:      'Inter', sans-serif;
+  --font-vt323:      'VT323', monospace;
+  --font-orbitron:   'Orbitron', sans-serif;
+  --font-nunito:     'Nunito', sans-serif;
+}

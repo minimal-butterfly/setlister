@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { DiscogsRelease } from '../types';
 import Image from 'next/image';
+import styles from './RecordCard.module.css';
 
 interface RecordCardProps {
   record: DiscogsRelease;
@@ -34,41 +35,35 @@ export default function RecordCard({ record, searchTerm, isInCollection, onAddTo
     }
   };
 
+  const buttonClass = [
+    styles.addButton,
+    isInCollection ? styles.addButtonAdded : '',
+    adding ? styles.addButtonAdding : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className="relative border border-gray-200 rounded-lg dark:border-gray-700 hover:shadow-lg transition-shadow">
-      <Link href={href} className="block p-4 cursor-pointer">
+    <div className={styles.card}>
+      <Link href={href} className={styles.link}>
         {record.thumb && (
-          <div className="mb-4">
+          <div className={styles.imageWrapper}>
             <Image
               src={record.thumb}
               alt={`${record.title} cover`}
               width={200}
               height={200}
-              className="w-full h-48 object-cover rounded"
+              className={styles.image}
             />
           </div>
         )}
-        <h3 className="text-lg font-semibold text-black dark:text-zinc-50">
-          {record.title}
-        </h3>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          {record.artist}
-        </p>
-        <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-2">
-          {record.year} • {record.label}
-        </p>
+        <h3 className={styles.title}>{record.title}</h3>
+        <p className={styles.artist}>{record.artist}</p>
+        <p className={styles.meta}>{record.year} • {record.label}</p>
       </Link>
       {onAddToCollection && (
         <button
           onClick={handleAdd}
           disabled={isInCollection || adding}
-          className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
-            isInCollection
-              ? 'bg-green-500 text-white cursor-default'
-              : adding
-              ? 'bg-zinc-400 text-white cursor-wait'
-              : 'bg-cyber-orange text-white hover:opacity-80'
-          }`}
+          className={buttonClass}
           title={isInCollection ? 'In collection' : 'Add to collection'}
         >
           {isInCollection ? '✓' : adding ? '…' : '+'}

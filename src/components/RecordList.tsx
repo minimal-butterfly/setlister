@@ -1,5 +1,6 @@
 import RecordCard from './RecordCard';
 import { DiscogsRelease } from '../types';
+import styles from './RecordList.module.css';
 
 interface RecordListProps {
   records?: DiscogsRelease[];
@@ -9,7 +10,7 @@ interface RecordListProps {
 
 export default function RecordList({ records = [], collectionIds, onAddToCollection }: RecordListProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className={styles.grid}>
       {records.map((record) => (
         <RecordCard
           key={record.id}

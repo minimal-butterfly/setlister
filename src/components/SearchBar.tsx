@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
+import styles from './SearchBar.module.css';
 
 interface SearchBarProps {
   onSearch: (term: string) => void;
@@ -27,19 +28,19 @@ export default function SearchBar({ onSearch, isLoading, initialValue = '' }: Se
   }, [debouncedValue, onSearch]);
 
   return (
-    <div className="flex items-center gap-3 w-full">
-      <div className="relative flex-1">
+    <div className={styles.wrapper}>
+      <div className={styles.inputWrapper}>
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Search Discogs releases..."
-          className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg bg-white text-black dark:border-gray-600 dark:bg-zinc-900 dark:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-cyber-violet"
+          className={styles.input}
         />
         {inputValue && (
           <button
             onClick={() => setInputValue('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+            className={styles.clearButton}
             aria-label="Clear search"
           >
             ✕
@@ -47,7 +48,7 @@ export default function SearchBar({ onSearch, isLoading, initialValue = '' }: Se
         )}
       </div>
       {isLoading && (
-        <span className="text-xs text-zinc-400 whitespace-nowrap">Searching...</span>
+        <span className={styles.loading}>Searching...</span>
       )}
     </div>
   );

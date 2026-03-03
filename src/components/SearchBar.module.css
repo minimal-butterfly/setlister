@@ -1,0 +1,61 @@
+/* SearchBar styles — uses only semantic tokens, no raw values. */
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--primitive-space-3);
+  width: 100%;
+}
+
+.inputWrapper {
+  position: relative;
+  flex: 1;
+}
+
+.input {
+  width: 100%;
+  padding: var(--primitive-space-2) 40px var(--primitive-space-2) var(--primitive-space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-base);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: var(--color-accent);
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.clearButton {
+  position: absolute;
+  right: var(--primitive-space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: var(--primitive-text-base);
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.clearButton:hover {
+  color: var(--color-text-primary);
+}
+
+.loading {
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  font-family: var(--font-body);
+}

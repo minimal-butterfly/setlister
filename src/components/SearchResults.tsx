@@ -2,6 +2,7 @@
 
 import RecordList from './RecordList';
 import { DiscogsRelease } from '../types';
+import styles from './SearchResults.module.css';
 
 interface SearchResultsProps {
   results: DiscogsRelease[];
@@ -14,16 +15,16 @@ interface SearchResultsProps {
 
 export default function SearchResults({ results, isLoading, searchTerm, error, collectionIds, onAddToCollection }: SearchResultsProps) {
   if (isLoading) {
-    return <p className="text-zinc-600 dark:text-zinc-400">Searching...</p>;
+    return <p className={styles.message}>Searching...</p>;
   }
 
   if (error) {
-    return <p className="text-red-600 dark:text-red-400">{error}</p>;
+    return <p className={styles.error}>{error}</p>;
   }
 
   if (results.length === 0) {
     return (
-      <p className="text-zinc-600 dark:text-zinc-400">
+      <p className={styles.message}>
         No releases found for &apos;{searchTerm}&apos;
       </p>
     );
