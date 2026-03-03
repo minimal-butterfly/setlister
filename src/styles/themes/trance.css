@@ -1,0 +1,33 @@
+/* Trance theme — cosmic, euphoric, Y2K.
+   Scoped to [data-theme="trance"]. Reassigns all semantic tokens.
+   Convention: values reference primitives by hex for traceability. */
+
+[data-theme="trance"] {
+  --color-surface:          #0a0014;
+  --color-surface-elevated: #140025;
+
+  --color-text-primary:   #f0e6ff;
+  --color-text-secondary: #8a7aaa;
+
+  --color-accent:       #ff2d95;
+  --color-accent-hover: #00b4ff;
+
+  --color-border: #2a1a40;
+
+  --font-heading: var(--font-orbitron);
+  --font-body:    var(--font-nunito);
+
+  --letter-spacing-heading: 0.04em;
+  --text-transform-heading: none;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  --shadow-accent:   0 0 16px #ff2d95;
+  --shadow-elevated: 0 4px 24px #140025;
+
+  --space-card-padding: 24px;
+  --space-card-gap:     24px;
+  --space-section-gap:  64px;
+}

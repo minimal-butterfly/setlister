@@ -1,0 +1,33 @@
+/* Acid theme — terminal/CRT screen aesthetic.
+   Scoped to [data-theme="acid"]. Reassigns all semantic tokens.
+   Convention: values reference primitives by hex for traceability. */
+
+[data-theme="acid"] {
+  --color-surface:          #000000;
+  --color-surface-elevated: #0d0d0d;
+
+  --color-text-primary:   #ccff00;
+  --color-text-secondary: #666600;
+
+  --color-accent:       #ccff00;
+  --color-accent-hover: #a3cc00;
+
+  --color-border: #1a1a00;
+
+  --font-heading: var(--font-vt323);
+  --font-body:    var(--font-space-mono);
+
+  --letter-spacing-heading: 0.08em;
+  --text-transform-heading: lowercase;
+
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+
+  --shadow-accent:   none;
+  --shadow-elevated: none;
+
+  --space-card-padding: 8px;
+  --space-card-gap:     8px;
+  --space-section-gap:  32px;
+}

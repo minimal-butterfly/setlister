@@ -1,0 +1,33 @@
+/* Techno theme — industrial, machine-like.
+   Scoped to [data-theme="techno"]. Reassigns all semantic tokens.
+   Convention: values reference primitives by hex for traceability. */
+
+[data-theme="techno"] {
+  --color-surface:          #0a0a0a;
+  --color-surface-elevated: #141414;
+
+  --color-text-primary:   #d4d4d4;
+  --color-text-secondary: #737373;
+
+  --color-accent:       #ff5f00;
+  --color-accent-hover: #cc4c00;
+
+  --color-border: #262626;
+
+  --font-heading: var(--font-space-mono);
+  --font-body:    var(--font-inter);
+
+  --letter-spacing-heading: 0.08em;
+  --text-transform-heading: uppercase;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  --shadow-accent:   none;
+  --shadow-elevated: none;
+
+  --space-card-padding: 16px;
+  --space-card-gap:     16px;
+  --space-section-gap:  48px;
+}

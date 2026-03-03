@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ThemeSwitcher from './ThemeSwitcher';
 
 export default function Navigation() {
   return (
@@ -11,6 +12,7 @@ export default function Navigation() {
           <Link href="/setlists">Setlists</Link>
         </li>
       </ul>
+      <ThemeSwitcher />
     </nav>
   );
 }

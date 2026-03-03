@@ -1,0 +1,41 @@
+/* Semantic tokens — the contract between design and code.
+   Components consume ONLY these tokens, never primitives.
+   :root sets Techno as the default theme.
+   Convention: --{category}-{role} (e.g. --color-surface, --font-heading) */
+
+:root {
+  /* Surfaces */
+  --color-surface:          #0a0a0a;
+  --color-surface-elevated: #141414;
+
+  /* Text */
+  --color-text-primary:   #d4d4d4;
+  --color-text-secondary: #737373;
+
+  /* Accent */
+  --color-accent:       #ff5f00;
+  --color-accent-hover: #cc4c00;
+
+  /* Border */
+  --color-border: #262626;
+
+  /* Typography */
+  --font-heading:             var(--font-space-mono);
+  --font-body:                var(--font-inter);
+  --letter-spacing-heading:   0.08em;
+  --text-transform-heading:   uppercase;
+
+  /* Radii */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  /* Shadows */
+  --shadow-accent:   none;
+  --shadow-elevated: none;
+
+  /* Spacing */
+  --space-card-padding:  16px;
+  --space-card-gap:      16px;
+  --space-section-gap:   48px;
+}

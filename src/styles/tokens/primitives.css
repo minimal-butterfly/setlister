@@ -1,0 +1,56 @@
+/* Primitive tokens — raw design values only.
+   These are NEVER consumed directly by components.
+   Components must use semantic tokens from semantic.css instead.
+   Convention: --primitive-{palette}-{descriptor} */
+
+:root {
+  /* Greys */
+  --primitive-grey-000: #000000;
+  --primitive-grey-050: #0a0a0a;
+  --primitive-grey-075: #0d0d0d;
+  --primitive-grey-100: #141414;
+  --primitive-grey-150: #1a1a1a;
+  --primitive-grey-200: #262626;
+  --primitive-grey-500: #737373;
+  --primitive-grey-800: #d4d4d4;
+  --primitive-grey-900: #f0f0f0;
+  --primitive-grey-999: #ffffff;
+
+  /* Techno palette */
+  --primitive-techno-orange:      #ff5f00;
+  --primitive-techno-orange-dark: #cc4c00;
+
+  /* Acid palette */
+  --primitive-acid-green:        #ccff00;
+  --primitive-acid-green-dim:    #a3cc00;
+  --primitive-acid-yellow-dark:  #666600;
+  --primitive-acid-yellow-black: #1a1a00;
+
+  /* Trance palette */
+  --primitive-trance-pink:         #ff2d95;
+  --primitive-trance-blue:         #00b4ff;
+  --primitive-trance-void:         #0a0014;
+  --primitive-trance-deep:         #140025;
+  --primitive-trance-purple:       #2a1a40;
+  --primitive-trance-lavender-dim: #8a7aaa;
+  --primitive-trance-lavender:     #f0e6ff;
+
+  /* Spacing scale */
+  --primitive-space-1:  4px;
+  --primitive-space-2:  8px;
+  --primitive-space-3:  12px;
+  --primitive-space-4:  16px;
+  --primitive-space-6:  24px;
+  --primitive-space-8:  32px;
+  --primitive-space-12: 48px;
+  --primitive-space-16: 64px;
+
+  /* Type scale */
+  --primitive-text-xs:   0.75rem;
+  --primitive-text-sm:   0.875rem;
+  --primitive-text-base: 1rem;
+  --primitive-text-lg:   1.125rem;
+  --primitive-text-xl:   1.25rem;
+  --primitive-text-2xl:  1.5rem;
+  --primitive-text-3xl:  2.25rem;
+}
