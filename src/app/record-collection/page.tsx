@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -22,6 +22,25 @@ export default function RecordCollection() {
   const [collection, setCollection] = useState<CollectionRecord[]>([]);
   const [collectionLoading, setCollectionLoading] = useState(true);
 
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastFading, setToastFading] = useState(false);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = useCallback((message: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    if (fadeTimer.current) clearTimeout(fadeTimer.current);
+    setToastMessage(message);
+    setToastFading(false);
+    toastTimer.current = setTimeout(() => {
+      setToastFading(true);
+      fadeTimer.current = setTimeout(() => {
+        setToastMessage(null);
+        setToastFading(false);
+      }, 500);
+    }, 2500);
+  }, []);
+
   const fetchCollection = useCallback(async () => {
     try {
       const res = await fetch('/api/collection');
@@ -39,12 +58,31 @@ export default function RecordCollection() {
   }, [fetchCollection]);
 
   const addToCollection = useCallback(async (record: DiscogsRelease) => {
+    // Search results embed the artist in the title ("Artist - Album").
+    // There is no separate artist field in the search response.
+    const artist =
+      typeof record.artist === 'string' && record.artist.trim()
+        ? record.artist
+        : Array.isArray(record.artists) && record.artists.length > 0
+        ? record.artists.map((a) => a.name).join(', ')
+        : typeof record.title === 'string' && record.title.includes(' - ')
+        ? record.title.split(' - ')[0].trim()
+        : 'Unknown';
+
+    // Search results return label as string[], detailed releases as {name}[] via labels.
+    const labelRaw = record.label as unknown;
     const label =
       Array.isArray(record.labels) && record.labels.length > 0
         ? record.labels[0].name
-        : typeof record.label === 'string'
-        ? record.label
+        : typeof labelRaw === 'string' && labelRaw
+        ? labelRaw
+        : Array.isArray(labelRaw) && labelRaw.length > 0
+        ? String((labelRaw as string[])[0])
         : undefined;
+
+    // Search results return year as a string ("2019"); coerce to integer for the API.
+    const yearNum = record.year != null ? parseInt(String(record.year), 10) : NaN;
+    const year = Number.isInteger(yearNum) && yearNum >= 1900 ? yearNum : undefined;
 
     const res = await fetch('/api/collection', {
       method: 'POST',
@@ -52,19 +90,31 @@ export default function RecordCollection() {
       body: JSON.stringify({
         id: record.id,
         title: record.title,
-        artist: record.artist,
-        ...(record.year != null && { year: record.year }),
+        artist,
+        ...(year !== undefined && { year }),
         ...(label ? { label } : {}),
         ...((record.cover_image || record.thumb) ? { cover_image: record.cover_image || record.thumb } : {}),
       }),
     });
 
+    if (!res.ok && res.status !== 409) {
+      const body = await res.json().catch(() => null);
+      console.error('addToCollection failed', res.status, body);
+      return;
+    }
+
     if (res.ok) {
       const saved = await res.json();
       setCollection((prev) => [saved, ...prev]);
+      // Strip "Artist - " prefix from title if present (search result format)
+      const albumTitle =
+        record.title.toLowerCase().startsWith((artist + ' - ').toLowerCase())
+          ? record.title.slice(artist.length + 3)
+          : record.title;
+      showToast(`${artist} — ${albumTitle} has been added to your collection!`);
     }
     // 409 = already in collection — state is already correct
-  }, []);
+  }, [showToast]);
 
   const removeFromCollection = useCallback(async (id: number) => {
     const res = await fetch(`/api/collection/${id}`, { method: 'DELETE' });
@@ -198,6 +248,16 @@ export default function RecordCollection() {
           />
         )}
       </main>
+
+      {toastMessage && (
+        <div
+          className={`fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 bg-zinc-900 text-white text-sm rounded-full shadow-lg whitespace-nowrap transition-opacity duration-500 ${
+            toastFading ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }

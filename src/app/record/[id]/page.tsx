@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import RecordCard from '../../../components/RecordCard';
@@ -15,6 +15,24 @@ export default function RecordPage() {
   const [error, setError] = useState<string | null>(null);
   const [inCollection, setInCollection] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastFading, setToastFading] = useState(false);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = (message: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    if (fadeTimer.current) clearTimeout(fadeTimer.current);
+    setToastMessage(message);
+    setToastFading(false);
+    toastTimer.current = setTimeout(() => {
+      setToastFading(true);
+      fadeTimer.current = setTimeout(() => {
+        setToastMessage(null);
+        setToastFading(false);
+      }, 500);
+    }, 2500);
+  };
 
   useEffect(() => {
     const fetchRecord = async () => {
@@ -55,20 +73,30 @@ export default function RecordPage() {
           ? record.label
           : undefined;
 
+      const artist =
+        Array.isArray(record.artists) && record.artists.length > 0
+          ? record.artists.map((a) => a.name).join(', ')
+          : typeof record.artist === 'string'
+          ? record.artist
+          : 'Unknown';
+
       const res = await fetch('/api/collection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: record.id,
           title: record.title,
-          artist: record.artist,
+          artist,
           ...(record.year != null && { year: record.year }),
           ...(label ? { label } : {}),
           ...((record.cover_image || record.thumb) ? { cover_image: record.cover_image || record.thumb } : {}),
         }),
       });
 
-      if (res.ok || res.status === 409) {
+      if (res.ok) {
+        setInCollection(true);
+        showToast(`${artist} — ${record.title} has been added to your collection!`);
+      } else if (res.status === 409) {
         setInCollection(true);
       }
     } finally {
@@ -186,6 +214,16 @@ export default function RecordPage() {
           </div>
         </div>
       </main>
+
+      {toastMessage && (
+        <div
+          className={`fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 bg-zinc-900 text-white text-sm rounded-full shadow-lg whitespace-nowrap transition-opacity duration-500 ${
+            toastFading ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }
