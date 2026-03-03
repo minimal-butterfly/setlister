@@ -8,9 +8,11 @@ interface SearchResultsProps {
   isLoading: boolean;
   searchTerm: string;
   error: string | null;
+  collectionIds?: Set<number>;
+  onAddToCollection?: (record: DiscogsRelease) => Promise<void>;
 }
 
-export default function SearchResults({ results, isLoading, searchTerm, error }: SearchResultsProps) {
+export default function SearchResults({ results, isLoading, searchTerm, error, collectionIds, onAddToCollection }: SearchResultsProps) {
   if (isLoading) {
     return <p className="text-zinc-600 dark:text-zinc-400">Searching...</p>;
   }
@@ -27,5 +29,5 @@ export default function SearchResults({ results, isLoading, searchTerm, error }:
     );
   }
 
-  return <RecordList records={results} />;
+  return <RecordList records={results} collectionIds={collectionIds} onAddToCollection={onAddToCollection} />;
 }
