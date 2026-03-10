@@ -1,0 +1,142 @@
+/* Main screen styles — uses only semantic tokens, no raw values. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--color-surface);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--primitive-space-12) var(--primitive-space-6);
+  gap: var(--space-section-gap);
+}
+
+/* Search */
+.searchContainer {
+  width: 100%;
+  max-width: 800px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: var(--primitive-space-3) 0;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-family: var(--font-heading);
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-heading);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.searchInput:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+/* Latest records */
+.recentSection {
+  width: 100%;
+  max-width: 800px;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-xs);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+  margin: 0 0 var(--primitive-space-6) 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-card-gap);
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  gap: var(--primitive-space-2);
+}
+
+.card:hover .cardTitle {
+  color: var(--color-accent);
+}
+
+.coverWrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coverPlaceholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+}
+
+.cardTitle {
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s;
+}
+
+.cardArtist {
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardMeta {
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.emptyState {
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}

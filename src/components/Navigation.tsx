@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import ThemeSwitcher from './ThemeSwitcher';
 import styles from './Navigation.module.css';
 
 export default function Navigation() {
@@ -7,13 +6,15 @@ export default function Navigation() {
     <nav className={styles.nav}>
       <ul className={styles.list}>
         <li>
-          <Link href="/record-collection" className={styles.link}>Record Collection</Link>
+          <Link href="/search" className={styles.link}>Search</Link>
+        </li>
+        <li>
+          <Link href="/record-collection" className={styles.link}>Collection</Link>
         </li>
         <li>
           <Link href="/setlists" className={styles.link}>Setlists</Link>
         </li>
       </ul>
-      <ThemeSwitcher />
     </nav>
   );
 }
