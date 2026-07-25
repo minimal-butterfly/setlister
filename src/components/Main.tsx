@@ -2,10 +2,8 @@
 
 import { useState, useEffect, KeyboardEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
-import Navigation from './Navigation';
 import Footer from './Footer';
+import RecordCard from './RecordCard';
 import { CollectionRecord } from '../services/collectionService';
 import styles from './Main.module.css';
 
@@ -30,8 +28,6 @@ export default function Main() {
 
   return (
     <div className={styles.page}>
-      <Navigation />
-
       <main className={styles.main}>
         <div className={styles.searchContainer}>
           <input
@@ -54,24 +50,19 @@ export default function Main() {
           ) : (
             <div className={styles.grid}>
               {records.map((record) => (
-                <Link key={record.id} href={`/record/${record.id}`} className={styles.card}>
-                  {record.cover_image ? (
-                    <div className={styles.coverWrapper}>
-                      <Image
-                        src={record.cover_image}
-                        alt={`${record.title} cover`}
-                        width={200}
-                        height={200}
-                        className={styles.cover}
-                      />
-                    </div>
-                  ) : (
-                    <div className={styles.coverPlaceholder} />
-                  )}
-                  <p className={styles.cardTitle}>{record.title}</p>
-                  <p className={styles.cardArtist}>{record.artist}</p>
-                  {record.year && <p className={styles.cardMeta}>{record.year}</p>}
-                </Link>
+                <RecordCard
+                  key={record.id}
+                  record={{
+                    id: record.id,
+                    title: record.title,
+                    artist: record.artist,
+                    year: record.year ?? 0,
+                    label: record.label ?? '',
+                    resource_url: '',
+                    tracklist: [],
+                    thumb: record.cover_image ?? undefined,
+                  }}
+                />
               ))}
             </div>
           )}

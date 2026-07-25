@@ -11,7 +11,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   padding: var(--primitive-space-12) var(--primitive-space-6);
   gap: var(--space-section-gap);
 }
@@ -19,7 +19,6 @@
 /* Search */
 .searchContainer {
   width: 100%;
-  max-width: 800px;
 }
 
 .searchInput {
@@ -49,7 +48,6 @@
 /* Latest records */
 .recentSection {
   width: 100%;
-  max-width: 800px;
 }
 
 .sectionTitle {

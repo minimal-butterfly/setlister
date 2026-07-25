@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import RecordCard from '../../../components/RecordCard';
 import { DiscogsRelease } from '../../../types';
+import styles from './RecordDetail.module.css';
 
 export default function RecordPage() {
   const params = useParams();
@@ -15,6 +16,9 @@ export default function RecordPage() {
   const [error, setError] = useState<string | null>(null);
   const [inCollection, setInCollection] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const [isHoveringDelete, setIsHoveringDelete] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastFading, setToastFading] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -104,123 +108,176 @@ export default function RecordPage() {
     }
   };
 
+  const handleDeleteFromCollection = async () => {
+    if (!record || deleting) return;
+    setDeleting(true);
+    setIsHoveringDelete(false);
+    try {
+      const res = await fetch(`/api/collection/${record.id}`, { method: 'DELETE' });
+      if (res.ok || res.status === 204) {
+        setInCollection(false);
+        setDeleted(true);
+      }
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handlePutBack = async () => {
+    if (!record) return;
+
+    const label =
+      Array.isArray(record.labels) && record.labels.length > 0
+        ? record.labels[0].name
+        : typeof record.label === 'string'
+        ? record.label
+        : undefined;
+
+    const artist =
+      Array.isArray(record.artists) && record.artists.length > 0
+        ? record.artists.map((a) => a.name).join(', ')
+        : typeof record.artist === 'string'
+        ? record.artist
+        : 'Unknown';
+
+    const res = await fetch('/api/collection', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: record.id,
+        title: record.title,
+        artist,
+        ...(record.year != null && { year: record.year }),
+        ...(label ? { label } : {}),
+        ...((record.cover_image || record.thumb) ? { cover_image: record.cover_image || record.thumb } : {}),
+      }),
+    });
+
+    if (res.ok || res.status === 409) {
+      setDeleted(false);
+      setInCollection(true);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-        <p className="text-zinc-600 dark:text-zinc-400">Loading record details...</p>
+      <div className={styles.stateWrapper}>
+        <p className={styles.stateMessage}>Loading record details...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-        <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+      <div className={styles.stateWrapper}>
+        <p className={styles.stateError}>Error: {error}</p>
       </div>
     );
   }
 
   if (!record) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-        <p className="text-zinc-600 dark:text-zinc-400">Record not found</p>
+      <div className={styles.stateWrapper}>
+        <p className={styles.stateMessage}>Record not found</p>
       </div>
     );
   }
 
+  const addButtonClass = [
+    styles.addButton,
+    inCollection && !isHoveringDelete ? styles.addButtonAdded : '',
+    inCollection && isHoveringDelete ? styles.addButtonDelete : '',
+    adding || deleting ? styles.addButtonAdding : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-4xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <div className={styles.page}>
+      <main className={styles.main}>
         {fromSearchTerm && (
           <Link
             href={`/record-collection?q=${encodeURIComponent(fromSearchTerm)}`}
-            className="mb-6 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+            className={styles.backLink}
           >
             ← Back to search results
           </Link>
         )}
-        <div className="w-full flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-black dark:text-zinc-50">Record Details</h1>
-          <button
-            onClick={handleAddToCollection}
-            disabled={inCollection || adding}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-              inCollection
-                ? 'bg-green-500 text-white cursor-default'
-                : adding
-                ? 'bg-zinc-400 text-white cursor-wait'
-                : 'bg-cyber-orange text-white hover:opacity-80'
-            }`}
-          >
-            {inCollection ? '✓ In Collection' : adding ? 'Adding…' : '+ Add to Collection'}
-          </button>
+
+        <div className={styles.header}>
+          <h1 className={styles.title}>Record Details</h1>
+          {deleted ? (
+            <div className={styles.deletedState}>
+              <span className={styles.deletedLabel}>Deleted</span>
+              <button onClick={handlePutBack} className={styles.putBackButton}>
+                Put back
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="1 4 1 10 7 10" />
+                  <path d="M3.51 15a9 9 0 1 0 .49-4.86" />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={inCollection ? handleDeleteFromCollection : handleAddToCollection}
+              disabled={adding || deleting}
+              onMouseEnter={() => inCollection && setIsHoveringDelete(true)}
+              onMouseLeave={() => setIsHoveringDelete(false)}
+              className={addButtonClass}
+            >
+              {deleting ? 'Deleting…'
+                : inCollection && isHoveringDelete ? '✕ Delete from Collection'
+                : inCollection ? '✓ In Collection'
+                : adding ? 'Adding…'
+                : '+ Add to Collection'}
+            </button>
+          )}
         </div>
 
-        <div className="w-full max-w-2xl">
-          <RecordCard record={record} />
+        <RecordCard record={record} />
 
-          <div className="mt-8 space-y-6">
+        <div className={styles.details}>
+          <h2 className={styles.sectionTitle}>Additional Information</h2>
+
+          <div className={styles.infoGrid}>
             <div>
-              <h2 className="text-2xl font-semibold text-black dark:text-zinc-50 mb-4">
-                Additional Information
-              </h2>
+              <h3 className={styles.infoLabel}>Genres</h3>
+              <p className={styles.infoValue}>{record.genres?.join(', ') || 'N/A'}</p>
+            </div>
+            <div>
+              <h3 className={styles.infoLabel}>Styles</h3>
+              <p className={styles.infoValue}>{record.styles?.join(', ') || 'N/A'}</p>
+            </div>
+            <div>
+              <h3 className={styles.infoLabel}>Labels</h3>
+              <p className={styles.infoValue}>
+                {Array.isArray(record.labels)
+                  ? record.labels.map((label) => label.name).join(', ')
+                  : record.label || 'N/A'}
+              </p>
+            </div>
+            <div>
+              <h3 className={styles.infoLabel}>Release Year</h3>
+              <p className={styles.infoValue}>{record.year || 'N/A'}</p>
+            </div>
+          </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h3 className="text-lg font-medium text-black dark:text-zinc-50">Genres</h3>
-                  <p className="text-zinc-600 dark:text-zinc-400">
-                    {record.genres?.join(', ') || 'N/A'}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-medium text-black dark:text-zinc-50">Styles</h3>
-                  <p className="text-zinc-600 dark:text-zinc-400">
-                    {record.styles?.join(', ') || 'N/A'}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-medium text-black dark:text-zinc-50">Labels</h3>
-                  <p className="text-zinc-600 dark:text-zinc-400">
-                    {Array.isArray(record.labels)
-                      ? record.labels.map((label) => label.name).join(', ')
-                      : record.label || 'N/A'}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-medium text-black dark:text-zinc-50">Release Year</h3>
-                  <p className="text-zinc-600 dark:text-zinc-400">{record.year || 'N/A'}</p>
-                </div>
+          {record.tracklist && record.tracklist.length > 0 && (
+            <div>
+              <h2 className={styles.sectionTitle}>Tracklist</h2>
+              <div className={styles.tracklist}>
+                {record.tracklist.map((track, index) => (
+                  <div key={index} className={styles.trackRow}>
+                    <span>{track.position}. {track.title}</span>
+                    <span>{track.duration}</span>
+                  </div>
+                ))}
               </div>
             </div>
-
-            {record.tracklist && record.tracklist.length > 0 && (
-              <div>
-                <h3 className="text-lg font-medium text-black dark:text-zinc-50 mb-4">Tracklist</h3>
-                <div className="space-y-2">
-                  {record.tracklist.map((track, index) => (
-                    <div key={index} className="flex justify-between text-sm">
-                      <span className="text-zinc-600 dark:text-zinc-400">
-                        {track.position}. {track.title}
-                      </span>
-                      <span className="text-zinc-500 dark:text-zinc-500">{track.duration}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </main>
 
       {toastMessage && (
-        <div
-          className={`fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 bg-zinc-900 text-white text-sm rounded-full shadow-lg whitespace-nowrap transition-opacity duration-500 ${
-            toastFading ? 'opacity-0' : 'opacity-100'
-          }`}
-        >
+        <div className={`${styles.toast} ${toastFading ? styles.toastFading : styles.toastVisible}`}>
           {toastMessage}
         </div>
       )}

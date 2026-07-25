@@ -8,6 +8,7 @@ import SearchBar from '../../components/SearchBar';
 import SearchResults from '../../components/SearchResults';
 import { DiscogsRelease } from '../../types';
 import { CollectionRecord } from '../../services/collectionService';
+import styles from './RecordCollection.module.css';
 
 export default function RecordCollection() {
   const router = useRouter();
@@ -58,8 +59,6 @@ export default function RecordCollection() {
   }, [fetchCollection]);
 
   const addToCollection = useCallback(async (record: DiscogsRelease) => {
-    // Search results embed the artist in the title ("Artist - Album").
-    // There is no separate artist field in the search response.
     const artist =
       typeof record.artist === 'string' && record.artist.trim()
         ? record.artist
@@ -69,7 +68,6 @@ export default function RecordCollection() {
         ? record.title.split(' - ')[0].trim()
         : 'Unknown';
 
-    // Search results return label as string[], detailed releases as {name}[] via labels.
     const labelRaw = record.label as unknown;
     const label =
       Array.isArray(record.labels) && record.labels.length > 0
@@ -80,7 +78,6 @@ export default function RecordCollection() {
         ? String((labelRaw as string[])[0])
         : undefined;
 
-    // Search results return year as a string ("2019"); coerce to integer for the API.
     const yearNum = record.year != null ? parseInt(String(record.year), 10) : NaN;
     const year = Number.isInteger(yearNum) && yearNum >= 1900 ? yearNum : undefined;
 
@@ -106,14 +103,12 @@ export default function RecordCollection() {
     if (res.ok) {
       const saved = await res.json();
       setCollection((prev) => [saved, ...prev]);
-      // Strip "Artist - " prefix from title if present (search result format)
       const albumTitle =
         record.title.toLowerCase().startsWith((artist + ' - ').toLowerCase())
           ? record.title.slice(artist.length + 3)
           : record.title;
       showToast(`${artist} — ${albumTitle} has been added to your collection!`);
     }
-    // 409 = already in collection — state is already correct
   }, [showToast]);
 
   const removeFromCollection = useCallback(async (id: number) => {
@@ -175,58 +170,49 @@ export default function RecordCollection() {
   }, [searchTerm]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-start py-32 px-16 bg-white dark:bg-black">
-        <header className="w-full text-center sm:text-left mb-8">
-          <h1 className="text-4xl font-bold text-black dark:text-zinc-50">Record Collection</h1>
-        </header>
+    <div className={styles.page}>
+      <main className={styles.main}>
+        <h1 className={styles.title}>Record Collection</h1>
 
-        <div className="w-full mb-8">
+        <div className={styles.searchWrapper}>
           <SearchBar onSearch={handleSearch} isLoading={loading} initialValue={initialQ} />
         </div>
 
         {!searchTerm ? (
-          <section className="w-full">
+          <section>
             {collectionLoading ? (
-              <p className="text-zinc-600 dark:text-zinc-400">Loading collection...</p>
+              <p className={styles.emptyState}>Loading collection...</p>
             ) : collection.length === 0 ? (
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className={styles.emptyState}>
                 Your collection is empty. Search Discogs to add records.
               </p>
             ) : (
               <>
-                <h2 className="text-lg font-semibold text-zinc-500 dark:text-zinc-400 mb-4">
+                <h2 className={styles.collectionCount}>
                   {collection.length} record{collection.length !== 1 ? 's' : ''}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className={styles.grid}>
                   {collection.map((record) => (
-                    <div
-                      key={record.id}
-                      className="relative border border-gray-200 rounded-lg dark:border-gray-700 hover:shadow-lg transition-shadow"
-                    >
-                      <Link href={`/record/${record.id}`} className="block p-4 cursor-pointer">
+                    <div key={record.id} className={styles.card}>
+                      <Link href={`/record/${record.id}`} className={styles.cardLink}>
                         {record.cover_image && (
-                          <div className="mb-4">
+                          <div className={styles.coverWrapper}>
                             <Image
                               src={record.cover_image}
                               alt={`${record.title} cover`}
                               width={200}
                               height={200}
-                              className="w-full h-48 object-cover rounded"
+                              className={styles.cover}
                             />
                           </div>
                         )}
-                        <h3 className="text-lg font-semibold text-black dark:text-zinc-50">
-                          {record.title}
-                        </h3>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400">{record.artist}</p>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-2">
-                          {record.year} • {record.label}
-                        </p>
+                        <h3 className={styles.cardTitle}>{record.title}</h3>
+                        <p className={styles.cardArtist}>{record.artist}</p>
+                        <p className={styles.cardMeta}>{record.year} • {record.label}</p>
                       </Link>
                       <button
                         onClick={() => removeFromCollection(record.id)}
-                        className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-red-500 hover:text-white transition-colors"
+                        className={styles.removeButton}
                         title="Remove from collection"
                       >
                         ×
@@ -250,11 +236,7 @@ export default function RecordCollection() {
       </main>
 
       {toastMessage && (
-        <div
-          className={`fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 bg-zinc-900 text-white text-sm rounded-full shadow-lg whitespace-nowrap transition-opacity duration-500 ${
-            toastFading ? 'opacity-0' : 'opacity-100'
-          }`}
-        >
+        <div className={`${styles.toast} ${toastFading ? styles.toastFading : styles.toastVisible}`}>
           {toastMessage}
         </div>
       )}

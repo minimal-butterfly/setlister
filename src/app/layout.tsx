@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Space_Mono, Inter, VT323, Orbitron, Nunito } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import Navigation from '@/components/Navigation';
 import '@/styles/tokens/primitives.css';
 import '@/styles/tokens/semantic.css';
 import '@/styles/themes/techno.css';
@@ -24,7 +25,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={fonts}>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <Navigation />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

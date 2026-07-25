@@ -1,0 +1,27 @@
+/* Setlists page styles — uses only semantic tokens, no raw values. */
+
+.page {
+  min-height: 100vh;
+  background: var(--color-surface);
+}
+
+.main {
+  padding: var(--primitive-space-12) var(--primitive-space-6);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-3xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+  margin: 0 0 var(--primitive-space-8) 0;
+}
+
+.body {
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-base);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
