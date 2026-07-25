@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import RecordCard from '../../../components/RecordCard';
+import TrackSetlistMenu from '../../../components/TrackSetlistMenu';
 import { DiscogsRelease } from '../../../types';
 import styles from './RecordDetail.module.css';
 
@@ -266,8 +267,14 @@ export default function RecordPage() {
               <div className={styles.tracklist}>
                 {record.tracklist.map((track, index) => (
                   <div key={index} className={styles.trackRow}>
-                    <span>{track.position}. {track.title}</span>
-                    <span>{track.duration}</span>
+                    <span className={styles.trackInfo}>
+                      <span className={styles.trackPosition}>{track.position}</span>
+                      <span>{track.title}</span>
+                    </span>
+                    <span className={styles.trackMeta}>
+                      <span>{track.duration}</span>
+                      <TrackSetlistMenu track={track} record={record} />
+                    </span>
                   </div>
                 ))}
               </div>

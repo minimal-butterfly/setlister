@@ -1,0 +1,240 @@
+/* TrackSetlistMenu — uses only semantic tokens, no raw values. */
+
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* The + trigger button */
+.trigger {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--primitive-text-base);
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.trigger:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Floating dropdown */
+.dropdown {
+  position: absolute;
+  top: calc(100% + var(--primitive-space-2));
+  right: 0;
+  z-index: 50;
+  min-width: 200px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--primitive-space-2) 0;
+  opacity: 1;
+  transition: opacity 0.45s;
+}
+
+.dropdownFading {
+  opacity: 0;
+}
+
+/* Setlist list */
+.setlistList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.setlistItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--primitive-space-2) var(--primitive-space-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-sm);
+  color: var(--color-text-primary);
+  gap: var(--primitive-space-2);
+}
+
+.setlistItem:hover:not(:disabled) {
+  background: var(--color-surface);
+  color: var(--color-accent);
+}
+
+.setlistItem:disabled {
+  cursor: default;
+  color: var(--color-text-secondary);
+}
+
+.setlistName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.checkmark {
+  font-size: var(--primitive-text-xs);
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+.emptyHint {
+  padding: var(--primitive-space-2) var(--primitive-space-4);
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Search bar (> 5 setlists) */
+.searchWrapper {
+  padding: var(--primitive-space-2) var(--primitive-space-3) 0;
+}
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--primitive-space-1) var(--primitive-space-2);
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--color-accent);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* New setlist button */
+.newSetlistButton {
+  display: block;
+  width: 100%;
+  padding: var(--primitive-space-2) var(--primitive-space-4);
+  background: none;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--primitive-space-1);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-xs);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+  color: var(--color-text-secondary);
+}
+
+.newSetlistButton:hover {
+  color: var(--color-accent);
+}
+
+/* New setlist form */
+.newForm {
+  border-top: 1px solid var(--color-border);
+  padding: var(--primitive-space-3) var(--primitive-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--primitive-space-2);
+}
+
+.formLabel {
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-xs);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+  color: var(--color-text-secondary);
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--primitive-space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  padding: var(--primitive-space-1) var(--primitive-space-2);
+}
+
+.nameInput {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-sm);
+  color: var(--color-text-primary);
+  min-width: 0;
+}
+
+.nameInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.enterHint {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.saveButton {
+  align-self: flex-end;
+  padding: var(--primitive-space-1) var(--primitive-space-3);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-xs);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+  color: var(--color-surface);
+  cursor: pointer;
+}
+
+.saveButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.saveButton:not(:disabled):hover {
+  opacity: 0.8;
+}
+
+/* Done message */
+.doneMessage {
+  padding: var(--primitive-space-3) var(--primitive-space-4);
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-sm);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+  color: var(--color-accent);
+  margin: 0;
+  text-align: center;
+}

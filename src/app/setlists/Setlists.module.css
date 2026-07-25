@@ -19,9 +19,99 @@
   margin: 0 0 var(--primitive-space-8) 0;
 }
 
-.body {
+.empty {
   font-family: var(--font-body);
-  font-size: var(--primitive-text-base);
+  font-size: var(--primitive-text-sm);
   color: var(--color-text-secondary);
   margin: 0;
+}
+
+/* Setlists */
+.setlistsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--primitive-space-12);
+}
+
+.setlistSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--primitive-space-4);
+}
+
+.setlistName {
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+  margin: 0;
+}
+
+.trackCount {
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing-heading);
+  text-transform: var(--text-transform-heading);
+}
+
+.emptyTracks {
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Tracklist */
+.tracklist {
+  display: flex;
+  flex-direction: column;
+}
+
+.trackRow {
+  display: flex;
+  align-items: center;
+  gap: var(--primitive-space-4);
+  padding: var(--primitive-space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trackNumber {
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing-heading);
+  min-width: var(--primitive-space-6);
+  flex-shrink: 0;
+}
+
+.trackInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--primitive-space-1);
+  min-width: 0;
+}
+
+.trackTitle {
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.trackSource {
+  font-family: var(--font-body);
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-secondary);
+}
+
+.trackDuration {
+  font-family: var(--font-heading);
+  font-size: var(--primitive-text-xs);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing-heading);
+  flex-shrink: 0;
 }
