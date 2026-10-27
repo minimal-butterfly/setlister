@@ -5,6 +5,7 @@
 [data-theme="trance"] {
   --color-surface:          #0a0014;
   --color-surface-elevated: #140025;
+  --color-surface-hover:    #1e0035;
 
   --color-text-primary:   #f0e6ff;
   --color-text-secondary: #8a7aaa;

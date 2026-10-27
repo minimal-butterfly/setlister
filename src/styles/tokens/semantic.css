@@ -7,6 +7,7 @@
   /* Surfaces */
   --color-surface:          #0a0a0a;
   --color-surface-elevated: #141414;
+  --color-surface-hover:    #1a1a1a;
 
   /* Text */
   --color-text-primary:   #d4d4d4;

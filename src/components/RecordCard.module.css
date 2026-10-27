@@ -9,6 +9,7 @@
 }
 
 .card:hover {
+  background: var(--color-surface-hover);
   box-shadow: var(--shadow-elevated);
 }
 
