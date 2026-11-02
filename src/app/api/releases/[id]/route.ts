@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { discogsFetch } from '@/lib/discogs';
+import { getReleaseDetails } from '@/services/discogsService';
 
-export async function GET(request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params;
+  const releaseId = Number(id);
+
+  // Only plain numeric IDs reach Discogs; anything else could address another endpoint.
+  if (!Number.isSafeInteger(releaseId) || releaseId <= 0) {
+    return NextResponse.json({ error: 'Invalid release id' }, { status: 400 });
+  }
+
   try {
-    const release = await discogsFetch(`/releases/${id}`);
+    const release = await getReleaseDetails(releaseId);
     return NextResponse.json(release);
-  } catch (error) {
-    console.error('Error fetching release details:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch release details' },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: 'Failed to fetch release details' }, { status: 500 });
   }
 }
