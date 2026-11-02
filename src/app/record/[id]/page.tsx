@@ -1,10 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import RecordCard from '../../../components/RecordCard';
 import TrackSetlistMenu from '../../../components/TrackSetlistMenu';
+import Toast from '../../../components/Toast';
+import { useToast } from '../../../hooks/useToast';
+import { addToCollection, removeFromCollection } from '../../../lib/collectionApi';
 import { DiscogsRelease } from '../../../types';
 import styles from './RecordDetail.module.css';
 
@@ -20,24 +23,7 @@ export default function RecordPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [isHoveringDelete, setIsHoveringDelete] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastFading, setToastFading] = useState(false);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const showToast = (message: string) => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    if (fadeTimer.current) clearTimeout(fadeTimer.current);
-    setToastMessage(message);
-    setToastFading(false);
-    toastTimer.current = setTimeout(() => {
-      setToastFading(true);
-      fadeTimer.current = setTimeout(() => {
-        setToastMessage(null);
-        setToastFading(false);
-      }, 500);
-    }, 2500);
-  };
+  const { toast, showToast } = useToast();
 
   useEffect(() => {
     const fetchRecord = async () => {
@@ -70,42 +56,16 @@ export default function RecordPage() {
   const handleAddToCollection = async () => {
     if (!record || inCollection || adding) return;
     setAdding(true);
-    try {
-      const label =
-        Array.isArray(record.labels) && record.labels.length > 0
-          ? record.labels[0].name
-          : typeof record.label === 'string'
-          ? record.label
-          : undefined;
+    const result = await addToCollection(record.id);
+    setAdding(false);
 
-      const artist =
-        Array.isArray(record.artists) && record.artists.length > 0
-          ? record.artists.map((a) => a.name).join(', ')
-          : typeof record.artist === 'string'
-          ? record.artist
-          : 'Unknown';
-
-      const res = await fetch('/api/collection', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: record.id,
-          title: record.title,
-          artist,
-          ...(record.year != null && { year: record.year }),
-          ...(label ? { label } : {}),
-          ...((record.cover_image || record.thumb) ? { cover_image: record.cover_image || record.thumb } : {}),
-        }),
-      });
-
-      if (res.ok) {
-        setInCollection(true);
-        showToast(`${artist} — ${record.title} has been added to your collection!`);
-      } else if (res.status === 409) {
-        setInCollection(true);
-      }
-    } finally {
-      setAdding(false);
+    if (result.status === 'added') {
+      setInCollection(true);
+      showToast(`${result.record.artist} — ${result.record.title} has been added to your collection!`);
+    } else if (result.status === 'exists') {
+      setInCollection(true);
+    } else {
+      showToast(result.message);
     }
   };
 
@@ -113,51 +73,27 @@ export default function RecordPage() {
     if (!record || deleting) return;
     setDeleting(true);
     setIsHoveringDelete(false);
-    try {
-      const res = await fetch(`/api/collection/${record.id}`, { method: 'DELETE' });
-      if (res.ok || res.status === 204) {
-        setInCollection(false);
-        setDeleted(true);
-      }
-    } finally {
-      setDeleting(false);
+    const removed = await removeFromCollection(record.id);
+    setDeleting(false);
+
+    if (removed) {
+      setInCollection(false);
+      setDeleted(true);
+    } else {
+      showToast('Could not remove this record');
     }
   };
 
   const handlePutBack = async () => {
     if (!record) return;
+    const result = await addToCollection(record.id);
 
-    const label =
-      Array.isArray(record.labels) && record.labels.length > 0
-        ? record.labels[0].name
-        : typeof record.label === 'string'
-        ? record.label
-        : undefined;
-
-    const artist =
-      Array.isArray(record.artists) && record.artists.length > 0
-        ? record.artists.map((a) => a.name).join(', ')
-        : typeof record.artist === 'string'
-        ? record.artist
-        : 'Unknown';
-
-    const res = await fetch('/api/collection', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: record.id,
-        title: record.title,
-        artist,
-        ...(record.year != null && { year: record.year }),
-        ...(label ? { label } : {}),
-        ...((record.cover_image || record.thumb) ? { cover_image: record.cover_image || record.thumb } : {}),
-      }),
-    });
-
-    if (res.ok || res.status === 409) {
-      setDeleted(false);
-      setInCollection(true);
+    if (result.status === 'error') {
+      showToast(result.message);
+      return;
     }
+    setDeleted(false);
+    setInCollection(true);
   };
 
   if (loading) {
@@ -283,11 +219,7 @@ export default function RecordPage() {
         </div>
       </main>
 
-      {toastMessage && (
-        <div className={`${styles.toast} ${toastFading ? styles.toastFading : styles.toastVisible}`}>
-          {toastMessage}
-        </div>
-      )}
+      <Toast toast={toast} />
     </div>
   );
 }

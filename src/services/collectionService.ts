@@ -10,7 +10,7 @@ export interface CollectionRecord {
   created_at?: string;
 }
 
-type NewRecord = Omit<CollectionRecord, 'created_at'>;
+export type NewRecord = Omit<CollectionRecord, 'created_at'>;
 
 export async function saveRecord(record: NewRecord) {
   const { data, error } = await supabase

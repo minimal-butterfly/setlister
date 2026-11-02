@@ -64,6 +64,11 @@ export interface DiscogsRelease {
   resource_url: string
   thumb?: string
   cover_image?: string
+  images?: Array<{
+    type: 'primary' | 'secondary'
+    uri: string
+    uri150?: string
+  }>
   tracklist: DiscogsTrack[]
   genres?: string[]
   styles?: Array<string>,
@@ -85,27 +90,4 @@ export interface DiscogsTrack {
     name: string
     join: string
   }>
-}
-
-export interface DiscogsArtist {
-  id: number
-  name: string
-  resource_url: string
-  releases_url: string
-}
-
-export interface DiscogsArtistReleasesResponse {
-  releases: DiscogsRelease[]
-  pagination: {
-    page: number
-    pages: number
-    per_page: number
-    items: number
-    urls: {
-      first: string
-      prev: string
-      next: string
-      last: string
-    }
-  }
 }
