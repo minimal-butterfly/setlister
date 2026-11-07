@@ -13,8 +13,8 @@ function parseReleaseId(body: unknown): number | null {
 
 export async function GET() {
   try {
-    const collection = await getCollection();
-    return NextResponse.json(collection);
+    const { records } = await getCollection();
+    return NextResponse.json(records);
   } catch (error) {
     console.error('Error fetching collection:', error);
     return NextResponse.json({ error: 'Failed to fetch collection' }, { status: 500 });
