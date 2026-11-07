@@ -60,6 +60,16 @@ export async function getRecord(id: number): Promise<CollectionRecord | null> {
   return data;
 }
 
+/** Which of the given ids are in the collection. */
+export async function getCollectedIds(ids: number[]): Promise<number[]> {
+  const { data, error } = await supabase
+    .from('records')
+    .select('id')
+    .in('id', ids);
+  if (error) throw error;
+  return data.map((row) => row.id);
+}
+
 export async function removeRecord(id: number) {
   const { error } = await supabase
     .from('records')

@@ -129,7 +129,7 @@ export default function RecordPage() {
       <main className={styles.main}>
         {fromSearchTerm && (
           <Link
-            href={`/record-collection?q=${encodeURIComponent(fromSearchTerm)}`}
+            href={`/search?q=${encodeURIComponent(fromSearchTerm)}`}
             className={styles.backLink}
           >
             ← Back to search results
