@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import SearchBar from '../../components/SearchBar';
 import SearchResults from '../../components/SearchResults';
+import LatestRecords from '../../components/LatestRecords';
 import Toast from '../../components/Toast';
 import { useToast } from '../../hooks/useToast';
 import { addToCollection } from '../../lib/collectionApi';
@@ -118,7 +119,7 @@ function SearchPage() {
           <SearchBar onSearch={handleSearch} isLoading={loading} initialValue={initialQ} />
         </div>
 
-        {searchTerm && (
+        {searchTerm ? (
           <SearchResults
             results={releases}
             isLoading={loading}
@@ -127,6 +128,8 @@ function SearchPage() {
             collectionIds={collectionIds}
             onAddToCollection={handleAdd}
           />
+        ) : (
+          <LatestRecords />
         )}
       </main>
 
