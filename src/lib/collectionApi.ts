@@ -1,4 +1,5 @@
 import type { CollectionRecord } from '@/services/collectionService';
+import { clearCollectionSnapshot } from '@/lib/collectionSnapshot';
 
 export type AddResult =
   | { status: 'added'; record: CollectionRecord }
@@ -19,6 +20,7 @@ export async function addToCollection(releaseId: number): Promise<AddResult> {
       const body = await res.json().catch(() => null);
       return { status: 'error', message: body?.error ?? 'Could not add this record' };
     }
+    clearCollectionSnapshot();
     return { status: 'added', record: await res.json() };
   } catch {
     return { status: 'error', message: 'Network error: could not add this record' };
@@ -29,6 +31,7 @@ export async function addToCollection(releaseId: number): Promise<AddResult> {
 export async function removeFromCollection(releaseId: number): Promise<boolean> {
   try {
     const res = await fetch(`/api/collection/${releaseId}`, { method: 'DELETE' });
+    if (res.ok) clearCollectionSnapshot();
     return res.ok;
   } catch {
     return false;

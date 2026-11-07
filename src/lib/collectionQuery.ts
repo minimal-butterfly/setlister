@@ -18,6 +18,19 @@ export const DEFAULT_DIRECTION: Record<SortField, SortDirection> = {
   year: 'desc',
 };
 
+export const SORT_LABELS: Record<SortField, string> = {
+  artist: 'Artist',
+  added: 'Date added',
+  year: 'Release year',
+};
+
+// Plain-language direction names, which depend on what is being sorted.
+export const DIRECTION_LABELS: Record<SortField, Record<SortDirection, string>> = {
+  artist: { asc: 'A → Z', desc: 'Z → A' },
+  added: { asc: 'Oldest first', desc: 'Newest first' },
+  year: { asc: 'Oldest first', desc: 'Newest first' },
+};
+
 // The database column behind each sort field.
 export const SORT_COLUMN: Record<SortField, string> = {
   artist: 'sort_artist',
