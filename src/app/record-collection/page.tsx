@@ -11,6 +11,7 @@ import { useToast } from '../../hooks/useToast';
 import { addToCollection, removeFromCollection } from '../../lib/collectionApi';
 import { DiscogsRelease } from '../../types';
 import { CollectionRecord } from '../../services/collectionService';
+import { MAX_LIMIT } from '../../lib/collectionQuery';
 import styles from './RecordCollection.module.css';
 
 export default function RecordCollection() {
@@ -30,11 +31,18 @@ export default function RecordCollection() {
 
   const fetchCollection = useCallback(async () => {
     try {
-      const res = await fetch('/api/collection');
-      if (res.ok) {
-        const data = await res.json();
-        setCollection(data);
+      // Loads every page so the grid and the "in collection" badges stay complete until lazy loading lands.
+      const all: CollectionRecord[] = [];
+      let total = Infinity;
+      while (all.length < total) {
+        const res = await fetch(`/api/collection?limit=${MAX_LIMIT}&from=${all.length}`);
+        if (!res.ok) return;
+        const page: { records: CollectionRecord[]; total: number } = await res.json();
+        if (page.records.length === 0) break;
+        all.push(...page.records);
+        total = page.total;
       }
+      setCollection(all);
     } finally {
       setCollectionLoading(false);
     }

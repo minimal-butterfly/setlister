@@ -50,6 +50,16 @@ export async function getCollection(query?: CollectionQuery): Promise<Collection
   return { records: data, total: count ?? 0 };
 }
 
+export async function getRecord(id: number): Promise<CollectionRecord | null> {
+  const { data, error } = await supabase
+    .from('records')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 export async function removeRecord(id: number) {
   const { error } = await supabase
     .from('records')

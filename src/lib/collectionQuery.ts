@@ -8,6 +8,7 @@ export type SortField = (typeof SORT_FIELDS)[number];
 export type SortDirection = (typeof SORT_DIRECTIONS)[number];
 
 export const DEFAULT_SORT: SortField = 'added';
+export const DEFAULT_LIMIT = 20;
 export const MAX_LIMIT = 50;
 
 // artist reads A → Z by default; added and year show the newest first.

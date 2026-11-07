@@ -14,9 +14,9 @@ export default function Main() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/collection')
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data: CollectionRecord[]) => setRecords(data.slice(0, 10)))
+    fetch('/api/collection?limit=10')
+      .then((r) => (r.ok ? r.json() : { records: [] }))
+      .then((data: { records: CollectionRecord[] }) => setRecords(data.records))
       .finally(() => setLoading(false));
   }, []);
 
