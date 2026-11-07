@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import SearchBar from '../../components/SearchBar';
 import SearchResults from '../../components/SearchResults';
@@ -10,7 +10,16 @@ import { addToCollection } from '../../lib/collectionApi';
 import { DiscogsRelease } from '../../types';
 import styles from './Search.module.css';
 
+// useSearchParams needs a Suspense boundary, or the build fails to prerender this page.
 export default function Search() {
+  return (
+    <Suspense>
+      <SearchPage />
+    </Suspense>
+  );
+}
+
+function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQ = searchParams.get('q') ?? '';
