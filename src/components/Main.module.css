@@ -45,33 +45,6 @@
   border-bottom-color: var(--color-accent);
 }
 
-/* Latest records */
-.recentSection {
-  width: 100%;
-}
-
-.sectionTitle {
-  font-family: var(--font-heading);
-  font-size: var(--primitive-text-xs);
-  font-weight: 700;
-  color: var(--color-text-secondary);
-  letter-spacing: var(--letter-spacing-heading);
-  text-transform: var(--text-transform-heading);
-  margin: 0 0 var(--primitive-space-6) 0;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--space-card-gap);
-}
-
-@media (max-width: 640px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 .card {
   display: flex;
   flex-direction: column;
@@ -128,13 +101,6 @@
 .cardMeta {
   font-family: var(--font-body);
   font-size: var(--primitive-text-xs);
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-.emptyState {
-  font-family: var(--font-body);
-  font-size: var(--primitive-text-sm);
   color: var(--color-text-secondary);
   margin: 0;
 }

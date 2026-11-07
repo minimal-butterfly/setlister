@@ -30,17 +30,14 @@ export default function RecordPage() {
       try {
         const [releaseRes, collectionRes] = await Promise.all([
           fetch(`/api/releases/${params.id}`),
-          fetch('/api/collection'),
+          fetch(`/api/collection/${params.id}`),
         ]);
 
         if (!releaseRes.ok) throw new Error('Failed to fetch record details');
         const data = await releaseRes.json();
         setRecord(data);
 
-        if (collectionRes.ok) {
-          const collection = await collectionRes.json();
-          setInCollection(collection.some((r: { id: number }) => r.id === Number(params.id)));
-        }
+        setInCollection(collectionRes.ok);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch record');
       } finally {
@@ -132,7 +129,7 @@ export default function RecordPage() {
       <main className={styles.main}>
         {fromSearchTerm && (
           <Link
-            href={`/record-collection?q=${encodeURIComponent(fromSearchTerm)}`}
+            href={`/search?q=${encodeURIComponent(fromSearchTerm)}`}
             className={styles.backLink}
           >
             ← Back to search results
